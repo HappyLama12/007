@@ -1,113 +1,105 @@
-# 007
-speciel agent 
 # Agentic RAG: Local LLM + Crawl4AI + ChromaDB Pipeline
 
 This project builds an **Agentic Retrieval-Augmented Generation (RAG)** system using:
 
-- **Local LLM** served by [Ollama](https://ollama.com)
-- **Web crawling and scraping** with [Crawl4AI](https://docs.crawl4ai.com)
-- **Vector storage and similarity search** using [ChromaDB](https://www.trychroma.com)
-- **Embeddings** via [sentence-transformers](https://www.sbert.net)
+* **Local LLM** served by [Ollama](https://ollama.com)
+* **Web crawling and scraping** with [Crawl4AI](https://docs.crawl4ai.com)
+* **Vector storage and similarity search** using [ChromaDB](https://www.trychroma.com)
+* **Embeddings** via [sentence-transformers](https://www.sbert.net)
 
 ---
 
 ## Project Structure
 
+```
 agentic_rag/
-├── agent.py # Query interface: search ChromaDB and call local LLM
-├── crawl.py # Crawl websites using Crawl4AI
-├── embed_store.py # Chunk, embed, and store content in ChromaDB
-├── config.py # Centralized config (URLs, tokens, model names)
-├── run.py # Main runner to crawl, embed, and store pipeline
-├── utils.py # Utility helpers (optional)
-├── requirements.txt # Python dependencies
-└── README.md # This file
-
+├── agent.py          # Query interface: search ChromaDB and call local LLM
+├── crawl.py          # Crawl websites using Crawl4AI
+├── embed_store.py    # Chunk, embed, and store content in ChromaDB
+├── config.py         # Centralized config (URLs, tokens, model names)
+├── run.py            # Main runner to crawl, embed, and store pipeline
+├── utils.py          # Utility helpers (optional)
+├── requirements.txt  # Python dependencies
+└── README.md         # This file
+```
 
 ---
 
-## Setup
+## Setup Instructions
 
-### 1. Clone repo
+### 1. Install Requirements
 
 ```bash
-git clone https://github.com/your-username/agentic-rag.git
-cd agentic-rag
-
-**### 2. Create and activate virtual environment**
-python3 -m venv .venv
-source .venv/bin/activate  # Linux/macOS
-.\.venv\Scripts\activate   # Windows PowerShell
-
-**### 3. Install dependencies**
 pip install -r requirements.txt
+```
 
-**### 4. Start dependent services**
-Crawl4AI: run your Crawl4AI container or server locally
+### 2. Run Supporting Services
 
-ChromaDB: start ChromaDB Docker or server locally
+Make sure the following are running locally:
 
-Ollama LLM: start your local Ollama LLM server (e.g., llama3, mistral, or phi3)
+* **Ollama LLM server**
+* **ChromaDB** (via Docker)
+* **Crawl4AI** (via Docker or local server)
 
-Usage
-Run full pipeline: crawl → embed → store
-bash
-Copy
-Edit
-python run.py
-This crawls the configured website, chunks and embeds content, and stores embeddings in ChromaDB.
+### 3. Configure Your Pipeline
 
-Ask questions interactively
-bash
-Copy
-Edit
-python agent.py
-You can then input questions; the agent will:
+Edit `config.py` to set:
 
-Embed your query
+* `CRAWL4AI_URL`
+* `CHROMA_HOST`, `CHROMA_PORT`
+* `OLLAMA_MODEL` (e.g., `llama3`, `phi3`, etc.)
 
-Search ChromaDB for relevant context
+### 4. Run the Pipeline
 
-Generate an answer using the local Ollama LLM with retrieved context
+```bash
+python run.py --url https://example.com --depth 2
+```
 
-Type exit or quit to end.
+This will:
 
-Configuration
-Edit config.py to change:
+1. Crawl the website
+2. Extract + chunk + embed the text
+3. Store embeddings in ChromaDB
 
-CRAWL4AI_URL — your Crawl4AI API endpoint
+### 5. Query the Agent
 
-WEBSITE_URL — website to crawl
+You can later query your local agent via `agent.py`:
 
-CHROMA_HOST and CHROMA_PORT — ChromaDB endpoint
+```bash
+python agent.py --query "What is OpenAI?"
+```
 
-OLLAMA_MODEL and OLLAMA_URL — local LLM model and API URL
+---
 
-Embedding model, chunk size, and language filter
+## Features
 
-Next Steps & Enhancements
-Add chat history and memory to support multi-turn conversations
+* Language filtering (English-only by default)
+* Simple chunking strategy
+* Reusable pipeline components
+* Modular config for fast iteration
 
-Implement Cache-Augmented Generation (CAG) instead of vanilla RAG
+---
 
-Add pipeline automation, scheduling, and monitoring
+## TODOs / Ideas
 
-Integrate with OpenWebUI or build a web frontend/REST API
+* Add streaming output from Ollama
+* Add web UI (e.g. with Gradio or Streamlit)
+* Implement CAG (Cache-Augmented Generation) mode for faster recall
+* Advanced chunking: by semantic boundaries or HTML tag parsing
+* Add file/document ingestion (PDF, DOCX, etc.)
 
-Support multiple languages and dynamic crawl depth
+---
 
-Use advanced chunking and summarization for better context size control
+## References & Inspiration
 
-References
-Crawl4AI Documentation
+* [Crawl4AI Docs](https://docs.crawl4ai.com)
+* [ChromaDB](https://www.trychroma.com)
+* [Ollama LLM Server](https://ollama.com)
+* [SentenceTransformers](https://www.sbert.net)
+* [LangChain: RAG from Scratch](https://github.com/langchain-ai/rag-from-scratch)
+* [Medium Article: CAG vs. RAG](https://medium.com/@hamzaennaffati98/cache-augmented-generation-cag-vs-retrieval-augmented-generation-rag-7b668e3a973b)
 
-ChromaDB
-
-Ollama LLM
-
-Sentence Transformers
-
-RAG vs CAG Medium article
+---
 
 License
 MIT License © HappyLama12
